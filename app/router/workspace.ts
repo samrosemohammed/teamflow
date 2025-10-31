@@ -4,6 +4,9 @@ import z from "zod";
 import { base } from "../middlewares/base";
 import { requireAuthMiddleware } from "../middlewares/auth";
 import { requireWorkspacehMiddleware } from "../middlewares/workspace";
+import { WorkspaceSchema } from "@/schemas/workspace";
+import { init, Organizations } from "@kinde/management-api-js";
+
 export const listWorkspaces = base
   .use(requireAuthMiddleware)
   .use(requireWorkspacehMiddleware)
@@ -42,5 +45,68 @@ export const listWorkspaces = base
       })),
       user: context.user,
       currentWorkspace: context.workspace,
+    };
+  });
+
+export const createWorkspace = base
+  .use(requireAuthMiddleware)
+  .use(requireWorkspacehMiddleware)
+  .route({
+    method: "POST",
+    path: "/workspace",
+    summary: "Create a new workspace",
+    tags: ["workspace"],
+  })
+  .input(WorkspaceSchema)
+  .output(
+    z.object({
+      orgCode: z.string(),
+      workspaceName: z.string(),
+    })
+  )
+  .handler(async ({ context, errors, input }) => {
+    init();
+    let data;
+    try {
+      data = await Organizations.createOrganization({
+        requestBody: {
+          name: input.name,
+        },
+      });
+    } catch {
+      throw errors.INTERNAL_SERVER_ERROR({
+        message: "Failed to create organization",
+      });
+    }
+
+    if (!data.organization?.code) {
+      throw errors.INTERNAL_SERVER_ERROR({
+        message: "Organization code is missing in the response",
+      });
+    }
+
+    try {
+      await Organizations.addOrganizationUsers({
+        orgCode: data.organization.code,
+        requestBody: {
+          users: [
+            {
+              id: context.user.id,
+              roles: ["admin"],
+            },
+          ],
+        },
+      });
+    } catch {
+      throw errors.INTERNAL_SERVER_ERROR({
+        message: "Failed to add user to organization",
+      });
+    }
+
+    const { refreshTokens } = getKindeServerSession();
+    await refreshTokens();
+    return {
+      orgCode: data.organization.code,
+      workspaceName: input.name,
     };
   });

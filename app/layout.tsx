@@ -5,6 +5,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/provider/theme-provider";
 import { AuthProvider } from "@/provider/kinde-auth-provider";
 import { Providers } from "@/provider/orpc-tanstack-query-provider";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,6 +40,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <Providers>{children}</Providers>
+            <Toaster closeButton position="top-center" />
           </ThemeProvider>
         </body>
       </html>
