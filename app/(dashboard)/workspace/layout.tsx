@@ -10,7 +10,7 @@ const WorkspaceLayout = async ({ children }: { children: ReactNode }) => {
   await queryClient.prefetchQuery(orpc.workspace.list.queryOptions());
   return (
     <div className="flex w-full h-screen">
-      <div className="flex h-full w-16 bg-secondary flex-col items-center py-3 px-2 border-border">
+      <div className="flex h-full w-16 bg-secondary flex-col items-center py-3 px-2 border-r border-border">
         <HydrateClient client={queryClient}>
           <WorkspaceList />
         </HydrateClient>
@@ -23,7 +23,7 @@ const WorkspaceLayout = async ({ children }: { children: ReactNode }) => {
           </HydrateClient>
         </div>
       </div>
-      <div>Page</div>
+      <div>{children}</div>
     </div>
   );
 };
