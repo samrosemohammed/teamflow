@@ -1,3 +1,4 @@
+"use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,17 +10,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { getAvatar } from "@/lib/get-avatar";
+import { orpc } from "@/lib/orpc";
 import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs";
 import { PortalLink } from "@kinde-oss/kinde-auth-nextjs/components";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { CreditCard, LogOut, User } from "lucide-react";
 import React from "react";
 
 export const UserNav = () => {
-  const user = {
-    name: "Mohammed Samrose",
-    image: "https://avatars.githubusercontent.com/u/118836220?v=4",
-    email: "samrose.mohammed@gmail.com",
-  };
+  const {
+    data: { user },
+  } = useSuspenseQuery(orpc.workspace.list.queryOptions());
+  console.log(user.picture);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -29,8 +32,8 @@ export const UserNav = () => {
           className="size-12 rounded-xl hover:rounded-lg duration-200 bg-background/50 transition-all border-border/50 hover:bg-accent hover:text-accent-foreground"
         >
           <Avatar>
-            <AvatarImage src={user.image} />
-            <AvatarFallback>{user.name.slice(0, 2)}</AvatarFallback>
+            <AvatarImage src={getAvatar(user?.picture, user.email!)} />
+            <AvatarFallback>{user.given_name?.slice(0, 2)}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -42,11 +45,11 @@ export const UserNav = () => {
       >
         <DropdownMenuLabel className="font-normal flex items-center gap-2 px-1 py-1.5 text-left text-sm">
           <Avatar className="relative size-8 rounded-lg">
-            <AvatarImage src={user.image} />
-            <AvatarFallback>{user.name.slice(0, 2)}</AvatarFallback>
+            <AvatarImage src={getAvatar(user?.picture, user.email!)} />
+            <AvatarFallback>{user.given_name?.slice(0, 2)}</AvatarFallback>
           </Avatar>
           <div className="grid flex-1 text-left text-sm leading-tight">
-            <p className="truncate font-medium">{user.name}</p>
+            <p className="truncate font-medium">{user.given_name}</p>
             <p className="text-muted-foreground truncate text-xs">
               {user.email}
             </p>
