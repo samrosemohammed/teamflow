@@ -9,8 +9,12 @@ import {
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { ChannelList } from "./_components/channel-list";
 import { WorkspaceMembersList } from "./_components/workspace-member-list";
+import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
+import { orpc } from "@/lib/orpc";
 
-const ChannelListLayout = ({ children }: { children: ReactNode }) => {
+const ChannelListLayout = async ({ children }: { children: ReactNode }) => {
+  const queryClient = getQueryClient();
+  await queryClient.prefetchQuery(orpc.channel.list.queryOptions());
   return (
     <>
       <div className="flex h-full w-80 flex-col bg-secondary border-r  border-border">
@@ -30,7 +34,9 @@ const ChannelListLayout = ({ children }: { children: ReactNode }) => {
               <ChevronDown className="size-4 transition-transform duration-200" />
             </CollapsibleTrigger>
             <CollapsibleContent>
-              <ChannelList />
+              <HydrateClient client={queryClient}>
+                <ChannelList />
+              </HydrateClient>
             </CollapsibleContent>
           </Collapsible>
         </div>
@@ -43,7 +49,9 @@ const ChannelListLayout = ({ children }: { children: ReactNode }) => {
               <ChevronUp className="size-4 transition-transform duration-200" />
             </CollapsibleTrigger>
             <CollapsibleContent>
-              <WorkspaceMembersList />
+              <HydrateClient client={queryClient}>
+                <WorkspaceMembersList />
+              </HydrateClient>
             </CollapsibleContent>
           </Collapsible>
         </div>
