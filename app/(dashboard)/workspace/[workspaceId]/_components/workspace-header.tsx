@@ -1,5 +1,11 @@
+"use client";
+import { orpc } from "@/lib/orpc";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import React from "react";
 
 export const WorkspaceHeader = () => {
-  return <h2 className="text-lg font-semibold">Bekey Channel</h2>;
+  const {
+    data: { currentWorkspace },
+  } = useSuspenseQuery(orpc.channel.list.queryOptions());
+  return <h2 className="text-lg font-semibold">{currentWorkspace.orgName}</h2>;
 };

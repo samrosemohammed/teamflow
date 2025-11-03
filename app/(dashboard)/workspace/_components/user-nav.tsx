@@ -16,6 +16,7 @@ import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs";
 import { PortalLink } from "@kinde-oss/kinde-auth-nextjs/components";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { CreditCard, LogOut, User } from "lucide-react";
+import Image from "next/image";
 import React from "react";
 
 export const UserNav = () => {
@@ -32,7 +33,13 @@ export const UserNav = () => {
           className="size-12 rounded-xl hover:rounded-lg duration-200 bg-background/50 transition-all border-border/50 hover:bg-accent hover:text-accent-foreground"
         >
           <Avatar>
-            <AvatarImage src={getAvatar(user?.picture, user.email!)} />
+            {/* <AvatarImage src={getAvatar(user?.picture, user.email!)} /> */}
+            <Image
+              src={getAvatar(user?.picture, user.email!)}
+              alt="User Avatar"
+              fill
+              className="object-cover"
+            />
             <AvatarFallback>{user.given_name?.slice(0, 2)}</AvatarFallback>
           </Avatar>
         </Button>
