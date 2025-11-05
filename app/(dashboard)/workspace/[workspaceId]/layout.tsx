@@ -17,7 +17,7 @@ const ChannelListLayout = async ({ children }: { children: ReactNode }) => {
   await queryClient.prefetchQuery(orpc.channel.list.queryOptions());
   return (
     <>
-      <div className="flex h-full w-80 flex-col bg-secondary border-r  border-border">
+      <div className="flex h-full w-80 flex-col bg-secondary border-r border-border">
         {/* Header */}
         <div className="flex items-center px-4 h-14 border-b border-border">
           <WorkspaceHeader />
@@ -56,6 +56,7 @@ const ChannelListLayout = async ({ children }: { children: ReactNode }) => {
           </Collapsible>
         </div>
       </div>
+      {children}
     </>
   );
 };

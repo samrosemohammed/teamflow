@@ -23,7 +23,7 @@ const WorkspaceLayout = async ({ children }: { children: ReactNode }) => {
           </HydrateClient>
         </div>
       </div>
-      <div>{children}</div>
+      {children}
     </div>
   );
 };
