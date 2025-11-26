@@ -29,6 +29,17 @@ export const MessageItem = ({ message }: iAppProps) => {
           className="break-word text-sm prose dark:prose-invert marker:text-primary max-w-none"
           content={JSON.parse(message.content)}
         />
+        {message.imageUrl && (
+          <div className="mt-3">
+            <Image
+              src={message.imageUrl}
+              alt="Message Attachment"
+              width={512}
+              height={512}
+              className="rounded-md max-h-80 w-auto object-contain"
+            />
+          </div>
+        )}
       </div>
     </div>
   );

@@ -111,7 +111,7 @@ export const MessageList = () => {
       <div
         ref={scrollRef}
         onScroll={handleScroll}
-        className="h-full overflow-y-auto px-4"
+        className="h-full overflow-y-auto px-4 flex flex-col space-y-1"
       >
         {items?.map((msg) => (
           <MessageItem key={msg.id} message={msg} />
