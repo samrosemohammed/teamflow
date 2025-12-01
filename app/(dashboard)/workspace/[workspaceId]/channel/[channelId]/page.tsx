@@ -4,9 +4,22 @@ import { ChannelHeader } from "./_components/channel-header";
 import { MessageList } from "./_components/message-list";
 import { MessageInput } from "./_components/message/message-input";
 import { useParams } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { orpc } from "@/lib/orpc";
+import { KindeUser } from "@kinde-oss/kinde-auth-nextjs";
 
 const ChannelPageMain = () => {
   const { channelId } = useParams<{ channelId: string }>();
+  const { data, error, isLoading } = useQuery(
+    orpc.channel.get.queryOptions({
+      input: {
+        channelId: channelId,
+      },
+    })
+  );
+  if (error) {
+    return <div>Error loading channelj</div>;
+  }
   return (
     <div className="flex h-screen w-full">
       {/* Main Channel Area */}
@@ -19,7 +32,10 @@ const ChannelPageMain = () => {
         </div>
         {/* Fixed Input */}
         <div className="border-t bg-background p-4">
-          <MessageInput channelId={channelId} />
+          <MessageInput
+            user={data?.currentUser as KindeUser<Record<string, unknown>>}
+            channelId={channelId}
+          />
         </div>
       </div>
     </div>
