@@ -13,7 +13,6 @@ export const MessageList = () => {
   const [hasInitialScrolled, setHasInitialScrolled] = useState(false);
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const [isAtBottom, setIsAtBottom] = useState(false);
-  const [newMessage, setNewMessages] = useState(false);
   const lastItemRef = useRef<string | undefined>(undefined);
   const { channelId } = useParams<{ channelId: string }>();
   const infiniteOptions = orpc.message.list.infiniteOptions({
@@ -55,7 +54,6 @@ export const MessageList = () => {
       const el = scrollRef.current;
       if (el) {
         bottomRef.current?.scrollIntoView({ block: "end" });
-        setHasInitialScrolled(true);
         setIsAtBottom(true);
       }
     }
@@ -137,10 +135,7 @@ export const MessageList = () => {
         requestAnimationFrame(() => {
           el.scrollTop = el.scrollHeight;
         });
-        setNewMessages(false);
         setIsAtBottom(true);
-      } else {
-        setNewMessages(true);
       }
     }
     lastItemRef.current = lastId;
@@ -150,7 +145,6 @@ export const MessageList = () => {
     const el = scrollRef.current;
     if (!el) return;
     bottomRef.current?.scrollIntoView({ block: "end" });
-    setNewMessages(false);
     setIsAtBottom(true);
   };
 
