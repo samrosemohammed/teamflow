@@ -30,6 +30,6 @@ model Message {
   authorEmail  String
   authorName   String
   authorAvatar String
-  Channel      Channel? @relation(fields: [channelId], references: [id])
+  channel      Channel? @relation(fields: [channelId], references: [id])
   channelId    String?
 }

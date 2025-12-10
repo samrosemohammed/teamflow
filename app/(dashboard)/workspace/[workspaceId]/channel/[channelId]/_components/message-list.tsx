@@ -1,7 +1,11 @@
 "use client";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { MessageItem } from "./message/message-item";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useQuery,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { orpc } from "@/lib/orpc";
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -47,6 +51,10 @@ export const MessageList = () => {
     staleTime: 30_000,
     refetchOnWindowFocus: false,
   });
+
+  const {
+    data: { user },
+  } = useSuspenseQuery(orpc.workspace.list.queryOptions());
 
   // to scrol to the bottom when message first load
   useEffect(() => {
@@ -165,7 +173,9 @@ export const MessageList = () => {
             />
           </div>
         ) : (
-          items?.map((msg) => <MessageItem key={msg.id} message={msg} />)
+          items?.map((msg) => (
+            <MessageItem currentUserId={user.id} key={msg.id} message={msg} />
+          ))
         )}
         <div ref={bottomRef}></div>
       </div>
