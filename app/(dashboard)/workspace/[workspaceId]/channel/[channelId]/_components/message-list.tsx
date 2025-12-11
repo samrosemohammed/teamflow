@@ -62,6 +62,7 @@ export const MessageList = () => {
       const el = scrollRef.current;
       if (el) {
         bottomRef.current?.scrollIntoView({ block: "end" });
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setIsAtBottom(true);
       }
     }
@@ -143,6 +144,7 @@ export const MessageList = () => {
         requestAnimationFrame(() => {
           el.scrollTop = el.scrollHeight;
         });
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setIsAtBottom(true);
       }
     }
@@ -152,7 +154,7 @@ export const MessageList = () => {
   const scrollToBottom = () => {
     const el = scrollRef.current;
     if (!el) return;
-    bottomRef.current?.scrollIntoView({ block: "end" });
+    bottomRef.current?.scrollIntoView({ block: "end", behavior: "smooth" });
     setIsAtBottom(true);
   };
 
