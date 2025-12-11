@@ -1,5 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { useThread } from "@/provider/thread-provider";
 import { MessageSquareText, Pencil } from "lucide-react";
 
 interface iAppProps {
@@ -12,6 +13,7 @@ export const MessageHoverToolbar = ({
   canEdit,
   onEdit,
 }: iAppProps) => {
+  const { toggleThread } = useThread();
   return (
     <div className="absolute -right-2 -top-3 items-center gap-1 rounded-md border border-gray-2 bg-white/95 px-1.5 py-1 shadow-sm backdrop-blur transition-opacity opacity-0 group-hover:opacity-100 dark:border-neutral-800 dark:bg-neutral-900/90">
       {canEdit && (
@@ -19,7 +21,11 @@ export const MessageHoverToolbar = ({
           <Pencil className="size-4" />
         </Button>
       )}
-      <Button variant={"ghost"} size={"icon"}>
+      <Button
+        onClick={() => toggleThread(messageId)}
+        variant={"ghost"}
+        size={"icon"}
+      >
         <MessageSquareText className="size-4" />
       </Button>
     </div>
