@@ -14,7 +14,6 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Message } from "@/app/generated/prisma/client";
 import { KindeUser } from "@kinde-oss/kinde-auth-nextjs";
 import { getAvatar } from "@/lib/get-avatar";
 import { MessageListItem } from "@/lib/types";
@@ -56,7 +55,7 @@ export const ThreadReplyForm = ({ threadId, user }: ThreadReplyFormProps) => {
         type InfiniteMessages = InfiniteData<MessagePage>;
         await queryClient.cancelQueries({ queryKey: listOptions.queryKey });
         const previous = queryClient.getQueryData(listOptions.queryKey);
-        const optimistic: Message = {
+        const optimistic: MessageListItem = {
           id: `optimistic-${crypto.randomUUID()}`,
           content: data.content,
           createdAt: new Date(),
@@ -68,6 +67,8 @@ export const ThreadReplyForm = ({ threadId, user }: ThreadReplyFormProps) => {
           channelId: data.channelId,
           threadId: data.threadId!,
           imageUrl: data.imageUrl ?? null,
+          repliesCount: 0,
+          reactions: [],
         };
         queryClient.setQueryData(listOptions.queryKey, (old) => {
           if (!old) return old;
