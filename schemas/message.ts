@@ -13,3 +13,16 @@ export const updateMessageSchema = z.object({
   content: z.string(),
 });
 export type UpdateMessageFormData = z.infer<typeof updateMessageSchema>;
+
+export const toggleReactionsSchema = z.object({
+  messageId: z.string(),
+  emoji: z.string().min(1),
+});
+
+export const groupedReactionsSchema = z.object({
+  emoji: z.string(),
+  count: z.number(),
+  reactedByMe: z.boolean(),
+});
+
+export type GroupedReactionsType = z.infer<typeof groupedReactionsSchema>;

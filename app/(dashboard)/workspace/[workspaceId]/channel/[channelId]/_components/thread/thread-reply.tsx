@@ -1,14 +1,19 @@
-import { Message } from "@/app/generated/prisma/client";
 import { SaveContent } from "@/components/raich-text-editor/save-content";
 import { formatDate } from "date-fns";
 import Image from "next/image";
 import React from "react";
+import { ReactionsBar } from "../reactions/reactions-bar";
+import { MessageListItem } from "@/lib/types";
 
 interface ThreadReplyProps {
-  message: Message;
+  message: MessageListItem;
+  selectedThreadId: string;
 }
 
-export const ThreadReply = ({ message }: ThreadReplyProps) => {
+export const ThreadReply = ({
+  message,
+  selectedThreadId,
+}: ThreadReplyProps) => {
   return (
     <div className="flex space-x-3 p-3 hover:bg-muted/30 rounded-lg">
       <Image
@@ -40,6 +45,11 @@ export const ThreadReply = ({ message }: ThreadReplyProps) => {
             />
           </div>
         )}
+        <ReactionsBar
+          context={{ type: "thread", threadId: selectedThreadId }}
+          reactions={message.reactions}
+          messageId={message.id}
+        />
       </div>
     </div>
   );
