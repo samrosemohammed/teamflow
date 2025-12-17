@@ -11,6 +11,7 @@ import { SaveContent } from "@/components/raich-text-editor/save-content";
 import { KindeUser } from "@kinde-oss/kinde-auth-nextjs";
 import { ThreadSidebarSkeleton } from "./thread-sidebar-skeleton";
 import { useEffect, useRef, useState } from "react";
+import { SummarizeThread } from "./summarize-thread";
 
 interface ThreadSidebarProps {
   user: KindeUser<Record<string, unknown>>;
@@ -120,6 +121,7 @@ export const ThreadSidebar = ({ user }: ThreadSidebarProps) => {
           <span>Thread</span>
         </div>
         <div className="flex items-center gap-2">
+          <SummarizeThread messageId={selectedThreadId!} />
           <Button onClick={closeThread} variant={"outline"} size={"icon"}>
             <X className="size-4" />
           </Button>
