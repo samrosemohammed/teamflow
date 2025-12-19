@@ -1,16 +1,23 @@
-import arcject, { slidingWindow } from "@/lib/arcject";
+import arcject, { sensitiveInfo, slidingWindow } from "@/lib/arcject";
 import { base } from "../base";
 import { KindeUser } from "@kinde-oss/kinde-auth-nextjs";
 
 const buildStandardAj = () =>
-  arcject.withRule(
-    // algorithm: sliding window
-    slidingWindow({
-      mode: "LIVE",
-      interval: "1m",
-      max: 40,
-    })
-  );
+  arcject
+    .withRule(
+      // algorithm: sliding window
+      slidingWindow({
+        mode: "LIVE",
+        interval: "1m",
+        max: 40,
+      })
+    )
+    .withRule(
+      sensitiveInfo({
+        mode: "LIVE",
+        deny: ["CREDIT_CARD_NUMBER", "PHONE_NUMBER"],
+      })
+    );
 
 export const writeSecurityMiddleware = base
   .$context<{
@@ -25,6 +32,13 @@ export const writeSecurityMiddleware = base
       if (decision.reason.isRateLimit()) {
         throw errors.RATE_LIMITED({
           message: "Access denied: Rate limit exceeded.",
+        });
+      }
+
+      if (decision.reason.isSensitiveInfo()) {
+        throw errors.BAD_REQUEST({
+          message:
+            "Access denied: Sensitive information detected. Please remove PII (e.g., credit card number, phone number).",
         });
       }
 
