@@ -7,6 +7,7 @@ import { tipTapJsonToMarkdown } from "@/lib/json-markdown";
 import { streamText } from "ai";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { streamToEventIterator } from "@orpc/server";
+import { aiSecurityMiddleware } from "../middlewares/arcject/ai";
 
 const openrouter = createOpenRouter({
   apiKey: process.env.LLM_KEY,
@@ -19,6 +20,7 @@ const model = openrouter.chat(MODEL_ID);
 export const generateThreadSummary = base
   .use(requireAuthMiddleware)
   .use(requireWorkspacehMiddleware)
+  .use(aiSecurityMiddleware)
   .route({
     method: "GET",
     path: "/ai/thread/summary",
@@ -110,6 +112,49 @@ export const generateThreadSummary = base
         },
       ],
       temperature: 0.2,
+    });
+    return streamToEventIterator(result.toUIMessageStream());
+  });
+
+export const generateCompose = base
+  .use(requireAuthMiddleware)
+  .use(requireWorkspacehMiddleware)
+  .use(aiSecurityMiddleware)
+  .route({
+    method: "POST",
+    path: "/ai/compose/generate",
+    summary: "Generate message compose using AI",
+    tags: ["AI"],
+  })
+  .input(
+    z.object({
+      content: z.string(),
+    })
+  )
+  .handler(async ({ input }) => {
+    const markDown = await tipTapJsonToMarkdown(input.content);
+    const system = [
+      "You are an expert rewriting assistant. You are not a chatbot.",
+      "Task: Rewrite the provided content to be clearer and better structured while preserving meaning, facts, terminology, and names.",
+      "Do not address the user, ask questions, and greetings, or include commentary.",
+      "Keep existing links/mentions intact, Do not change code blocks or inline code content.",
+      "Output strictly in Markdown (paragraphs and optional bullet list). Do not output any HTML or images.",
+      "Return ONLY the rewritten content. No preamble, headings, or closing remarks.",
+    ].join("\n");
+    const result = streamText({
+      model,
+      system,
+      messages: [
+        {
+          role: "user",
+          content: "Please rewrite and imporve the following content: ",
+        },
+        {
+          role: "user",
+          content: markDown,
+        },
+      ],
+      temperature: 0,
     });
     return streamToEventIterator(result.toUIMessageStream());
   });
