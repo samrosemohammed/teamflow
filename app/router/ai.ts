@@ -102,9 +102,10 @@ export const generateThreadSummary = base
       "– Then add a blank line followed by exactly 2–3 bullet points (using “-”) with the most important takeaways. Each bullet is one sentence.",
       "Style: neutral, specific, and concise. Preserve terminology from the thread (names, acronyms). Avoid filler or meta-commentary. Do not add a closing sentence.",
       "If the context is insufficient, return a single-sentence summary and omit the bullet list.",
-    ];
+    ].join("\n");
     const result = streamText({
       model,
+      system,
       messages: [
         {
           role: "user",
